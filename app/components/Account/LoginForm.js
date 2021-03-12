@@ -1,14 +1,16 @@
 
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Input, Button, Icon} from 'react-native-elements';
+import AuthContext from '../../context/auth/AuthContext';
 import firebase from '../../database/firebase';
 import {validationEmail,validationPassword} from '../../utils/validations';
 import Loading from '../Loading';
 
 const LoginForm = ({toast}) => {
   const navigation = useNavigation();
+  const {loginUser} = useContext(AuthContext);
   const [isVisible, setIsVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userData, setUserData] = useState({
@@ -31,12 +33,12 @@ const LoginForm = ({toast}) => {
       toast.current.show("Contraseña minima de 6 caracteres")
     }else {
       setIsVisible(true);
-      try {
-       await firebase.auth.signInWithEmailAndPassword(userData.email,userData.password);
-       setIsVisible(false);
-       navigation.navigate("account")
-      } catch (error) {
-        console.log(error);
+      const user = await loginUser(userData.email,userData.password);
+      // console.log(user);
+      if (user){
+        setIsVisible(false);
+        navigation.navigate("account")
+      }else{
         setIsVisible(false);
         toast.current.show("Email o contraseña incorrectos");
       }

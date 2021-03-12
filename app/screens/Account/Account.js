@@ -1,23 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import firebase from '../../database/firebase';
-
+import AuthContext from '../../context/auth/AuthContext';
 import UserLogged from './UserLogged';
 import UserGuest from './UserGuest';
 
 import Loading from '../../components/Loading';
 
 const Account = () => {
-  const [login, setLogin] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const {user,reloadUser} = useContext(AuthContext);
+  // console.log(user);
   useEffect(() => {
-    firebase.auth.onAuthStateChanged(user => {
-      user ? setLogin(true) : setLogin(false)
-    })
+    reloadUser();
   }, [])
-  if(login == null) return <Loading isVisible={true} text="Cargando ..."/>
-  return ( 
-    login ? <UserLogged/> : <UserGuest/>
-  );
+  if(user === null) return <Loading isVisible={true} text="Cargando ..."/>
+  return user ? <UserLogged/> : <UserGuest/>;
 }
  
 export default Account;

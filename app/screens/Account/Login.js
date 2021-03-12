@@ -20,7 +20,7 @@ const Login = () => {
         <CreateAccout></CreateAccout>
       </View>
       <Divider style={styles.divider}/>
-      <Text>Social Login</Text>
+      {/* <Text>Social Login</Text> */}
       <Toast ref={toast} position="center" opacity={0.8}/>
     </ScrollView>
   );

@@ -53,7 +53,7 @@ const Navigation = () => {
           name="account"
           component={AccountStack}
           options={{
-            title: "Buscar"
+            title: "Cuenta"
           }}
         />
       </Tab.Navigator>
