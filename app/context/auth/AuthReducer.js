@@ -10,7 +10,10 @@ import {
   REGISTER_SUCCESS,
   RELOAD_USER,
   RELOAD_USER_SUCCESS,
-  RELOAD_USER_ERROR
+  RELOAD_USER_ERROR,
+  UPDATE_AVATAR,
+  UPDATE_AVATAR_SUCCESS,
+  UPDATE_AVATAR_ERROR
 } from './AuthTypes';
 
 const AuthReducer = (state, action) => {
@@ -19,6 +22,7 @@ const AuthReducer = (state, action) => {
     case REGISTER:
     case RELOAD_USER:
     case LOGOUT: 
+    case UPDATE_AVATAR:
       return {
         ...state,
         loading: true

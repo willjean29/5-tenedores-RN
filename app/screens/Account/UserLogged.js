@@ -7,23 +7,13 @@ import Loading from '../../components/Loading';
 import firebase from '../../database/firebase';
 import InfoUser from './InfoUser';
 
-const UserLogged = () => {
+const UserLogged = ({setReloadUserInfo}) => {
   const toast = useRef();
   const {user, logoutUser} = useContext(AuthContext);
-  // const [userInfo, setUserInfo] = useState(null)
   const [isVisible, setIsVisible] = useState(false);
   const [loadingText, setLoadingText] = useState("");
 
-  // useEffect(() => {
-  //   const getCurrentUser = async() => {
-  //     const user = await firebase.auth.currentUser;
-  //     // setUserInfo(user);
-  //     console.log("logeed  ", user);
-  //   }
-  //   getCurrentUser();
-  // }, [])
   const handleLogaut = () => {
-    console.log("click");
     logoutUser();
   }
   return ( 
@@ -31,6 +21,9 @@ const UserLogged = () => {
       {user && (
         <InfoUser
           userInfo={user}
+          setReloadUserInfo={setReloadUserInfo}
+          setIsVisible={setIsVisible}
+          setLoadingText={setLoadingText}
           toast={toast}
         />
       )}

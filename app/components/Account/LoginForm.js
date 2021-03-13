@@ -4,7 +4,6 @@ import { StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Input, Button, Icon} from 'react-native-elements';
 import AuthContext from '../../context/auth/AuthContext';
-import firebase from '../../database/firebase';
 import {validationEmail,validationPassword} from '../../utils/validations';
 import Loading from '../Loading';
 

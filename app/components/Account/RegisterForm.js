@@ -3,7 +3,6 @@ import { View, Text, StyleSheet} from 'react-native';
 import {Input, Icon, Button} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
 import AuthContext from '../../context/auth/AuthContext';
-import firebase from '../../database/firebase';
 import {validationEmail,validationPassword} from '../../utils/validations';
 import Loading from '../Loading';
 const RegisterForm = ({toast}) => {
