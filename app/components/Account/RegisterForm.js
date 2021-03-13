@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet} from 'react-native';
 import {Input, Icon, Button} from 'react-native-elements';
 import {useNavigation} from '@react-navigation/native';
+import AuthContext from '../../context/auth/AuthContext';
 import firebase from '../../database/firebase';
 import {validationEmail,validationPassword} from '../../utils/validations';
 import Loading from '../Loading';
 const RegisterForm = ({toast}) => {
   const navigation = useNavigation();
+  const {registerUser} = useContext(AuthContext);
   const [isVisible, setIsVisible] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showRepeatPassword, setShowRepeatPassword] = useState(false);
@@ -26,7 +28,7 @@ const RegisterForm = ({toast}) => {
     }else{
       setIsVisible(true);
       try {
-        await firebase.auth.createUserWithEmailAndPassword(email,password);
+        await registerUser(email,password);
         setIsVisible(false);
         navigation.navigate("account");
       } catch (error) {

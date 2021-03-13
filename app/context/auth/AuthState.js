@@ -7,10 +7,14 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
+  LOGOUT_SUCCESS,
+  LOGOUT_ERROR,
   REGISTER,
   REGISTER_ERROR,
   REGISTER_SUCCESS,
-  RELOAD_USER
+  RELOAD_USER,
+  RELOAD_USER_ERROR,
+  RELOAD_USER_SUCCESS
 } from './AuthTypes';
 const AuthState = (props) => {
   const initialState = {
@@ -20,53 +24,74 @@ const AuthState = (props) => {
   }
   const [state, dispatch] = useReducer(AuthReducer, initialState);
 
+  const registerUser = async(email,password) => {
+    dispatch({
+      type: REGISTER
+    })
+    try {
+      const user = await firebase.auth.createUserWithEmailAndPassword(email,password);
+      dispatch({
+        type: REGISTER_SUCCESS,
+        payload: user.user
+      })
+    } catch (error) {
+      dispatch({
+        type: REGISTER_ERROR,
+        payload: user
+      })
+      throw new Error ("Error register");
+    }
+  }
+
   const loginUser = async(email, password) => {
-    let resp = false;
     dispatch({
       type: LOGIN
     })
     try {
       const user = await firebase.auth.signInWithEmailAndPassword(email, password);
-      console.log(user);
+      console.log("LOGIN",user);
       dispatch({
         type: LOGIN_SUCCESS,
         payload: user.user
       })
-      resp = true;
     } catch (error) {
       dispatch({
         type: LOGIN_ERROR
       })    
-      resp = false;
+      throw new Error ("Ups");
     }
-
-    return resp;
   }
 
   const logoutUser = async() => {
+    dispatch({
+      type: LOGOUT
+    })
     try {
-      const user = await firebase.auth.signOut();
+      await firebase.auth.signOut();
       dispatch({
-        type: LOGOUT
+        type: LOGOUT_SUCCESS
       })
     } catch (error) {
-      console.log(error)
+      dispatch({
+        type: LOGOUT_ERROR
+      })
     }
   }
 
   const reloadUser = () => {
+    dispatch({
+      type: RELOAD_USER
+    })
     firebase.auth.onAuthStateChanged((user) =>{
       if (user === null){
         return (
           dispatch({
-            type: RELOAD_USER,
-            payload: false
+            type: RELOAD_USER_ERROR
           })
         )
       }
-      // console.log("reload", user);
       dispatch({
-        type: RELOAD_USER,
+        type: RELOAD_USER_SUCCESS,
         payload: user
       })
     });
@@ -79,7 +104,8 @@ const AuthState = (props) => {
         error: state.error,
         loginUser,
         logoutUser,
-        reloadUser
+        reloadUser,
+        registerUser
       }}
     >
       {props.children}

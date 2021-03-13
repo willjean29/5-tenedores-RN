@@ -33,12 +33,11 @@ const LoginForm = ({toast}) => {
       toast.current.show("Contraseña minima de 6 caracteres")
     }else {
       setIsVisible(true);
-      const user = await loginUser(userData.email,userData.password);
-      // console.log(user);
-      if (user){
+      try {
+        await loginUser(userData.email,userData.password);
         setIsVisible(false);
-        navigation.navigate("account")
-      }else{
+        navigation.navigate("account");
+      }catch(error){
         setIsVisible(false);
         toast.current.show("Email o contraseña incorrectos");
       }
