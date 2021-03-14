@@ -47,6 +47,7 @@ const InfoUser = ({userInfo, setReloadUserInfo, toast, setIsVisible, setLoadingT
       await firebase.auth.currentUser.updateProfile(update);
       setIsVisible(false);
       setReloadUserInfo(true);  
+      toast.current.show("Avatar actulizado");
     } catch (error) {
       console.log(error);
       setIsVisible(false);

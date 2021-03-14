@@ -4,8 +4,8 @@ import Toast from 'react-native-easy-toast';
 import { Button } from 'react-native-elements';
 import AuthContext from '../../context/auth/AuthContext';
 import Loading from '../../components/Loading';
-import firebase from '../../database/firebase';
-import InfoUser from './InfoUser';
+import InfoUser from '../../components/Account/InfoUser';
+import AccountOptions from '../../components/Account/AccountOptions';
 
 const UserLogged = ({setReloadUserInfo}) => {
   const toast = useRef();
@@ -28,7 +28,13 @@ const UserLogged = ({setReloadUserInfo}) => {
         />
       )}
 
-      <Text>AccountOptions ...</Text>
+      <AccountOptions
+        userInfo={user}
+        setReloadUserInfo={setReloadUserInfo}
+        setIsVisible={setIsVisible}
+        setLoadingText={setLoadingText}
+        toast={toast}
+      />
 
       <Button
         title="Cerrar Sesión"
