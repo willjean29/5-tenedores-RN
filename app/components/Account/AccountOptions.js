@@ -3,6 +3,8 @@ import { View, StyleSheet, Text } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import Modal from '../Modal';
 import ChangeDisplayNameForm from './ChangeDisplayNameForm';
+import ChangeEmailForm from './ChangeEmailForm';
+import ChangePasswordForm from './ChangePasswordForm';
 const AccountOptions = ({userInfo, setReloadUserInfo,toast}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [renderComponent, setRenderComponent] = useState(null);
@@ -22,12 +24,26 @@ const AccountOptions = ({userInfo, setReloadUserInfo,toast}) => {
         break;
       case "email":
         console.log("cambiar email")
-        setRenderComponent(<Text>{key}</Text>);
+        setRenderComponent(
+          <ChangeEmailForm
+            userInfo={userInfo}
+            setReloadUserInfo={setReloadUserInfo}
+            setIsVisible={setIsVisible}
+            toast={toast}
+          />
+        );
         setIsVisible(true);
         break;
       case "password":
         console.log("cambiar password")
-        setRenderComponent(<Text>{key}</Text>);
+        setRenderComponent(
+          <ChangePasswordForm
+            userInfo={userInfo}
+            setReloadUserInfo={setReloadUserInfo}
+            setIsVisible={setIsVisible}
+            toast={toast}
+          />
+        );
         setIsVisible(true);
         break;
       default:

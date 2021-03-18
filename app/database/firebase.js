@@ -16,10 +16,12 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 const storage = firebase.storage();
+const getCredentials = firebase.auth.EmailAuthProvider.credential;
 
 export default {
   auth,
   db,
-  storage
+  storage,
+  getCredentials
 }
 
