@@ -37,6 +37,7 @@ const ChangePasswordForm = ({userInfo, setReloadUserInfo, setIsVisible, toast}) 
           await firebase.auth.currentUser.updatePassword(newPassword);
           setIsLoading(false);
           setIsVisible(false);
+          setReloadUserInfo(true);
           toast.current.show("Contraseña actualizada");
         } catch (error) {
           console.log(error);
