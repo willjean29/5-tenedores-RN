@@ -20,6 +20,12 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.oscopupejean.tenedores",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBsOsSVUVWV-5dC2up3fFZmsUCWE_7VDnc"
+        }
+      },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

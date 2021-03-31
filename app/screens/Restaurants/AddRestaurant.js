@@ -15,7 +15,7 @@ const AddRestaurant = () => {
       <Toast ref={toast} position="center" opacity={0.8}/>
       <Loading
         isVisible={isVisible}
-        text="Creando restaurantes"
+        text="Creando restaurante"
       />
     </View>
   );
