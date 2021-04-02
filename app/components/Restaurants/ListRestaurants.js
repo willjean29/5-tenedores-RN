@@ -35,7 +35,7 @@ const RestaurantItem = ({restaurant}) => {
   const navigation = useNavigation();
   const goRestaurant = () => {
     console.log("OK");
-    navigation.navigate("restaurant");
+    navigation.navigate("restaurant",{restaurant});
   }
   return (
     <TouchableOpacity onPress={goRestaurant}>
@@ -59,7 +59,7 @@ const RestaurantItem = ({restaurant}) => {
             {restaurant.name}
           </Text>
           <Text style={styles.restaurantAddress}>
-            {restaurant.address}
+            {restaurant.address.substr(0,60)}...
           </Text>
           <Text style={styles.restaurantDescription}>
             {restaurant.description.substr(0,60)}...
@@ -107,11 +107,12 @@ const styles = StyleSheet.create({
   restaurantAddress: {
     paddingTop: 5,
     color: "gray",
+    width: 280
   },
   restaurantDescription: {
     paddingTop: 2,
     color: "gray",
-    width: 250
+    width: 280
   }
 })
  

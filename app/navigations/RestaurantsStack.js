@@ -25,9 +25,6 @@ const RestaurantsStack = () => {
       <Stack.Screen
         name="restaurant"
         component={Restaurant}
-        options={{
-          title: "Detalle de Restaurante"
-        }}
       />
     </Stack.Navigator>
   );

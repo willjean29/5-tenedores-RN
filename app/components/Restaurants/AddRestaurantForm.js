@@ -11,6 +11,8 @@ import firebase from '../../database/firebase';
 import ImageDefault from '../../../assets/img/no-image.png';
 const widthScreen = Dimensions.get("window").width;
 const AddRestaurantForm = ({toast,setIsVisible}) => {
+  const api = 'https://meet.arcavirtual.net/ejercicios/all';
+
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -77,6 +79,7 @@ const AddRestaurantForm = ({toast,setIsVisible}) => {
         setDescription={setDescription}
         setIsVisibleMap={setIsVisibleMap}
         locationRestaurant={locationRestaurant}
+        address={address}
       />
       <UploadImage
         imagesSelected={imagesSelected}
@@ -92,6 +95,7 @@ const AddRestaurantForm = ({toast,setIsVisible}) => {
         isVisibleMap={isVisibleMap}
         setIsVisibleMap={setIsVisibleMap}
         setlLocationRestaurant={setlLocationRestaurant}
+        setAddress={setAddress}
         toast={toast}
       />
     </ScrollView>
@@ -111,7 +115,7 @@ const ImageRestautant = ({imagesSelected}) => {
   )
 }
 
-const FormAdd = ({setName, setAddress, setDescription,setIsVisibleMap,locationRestaurant}) => {
+const FormAdd = ({setName, setAddress, setDescription,setIsVisibleMap,locationRestaurant,address}) => {
   return (
     <View style={styles.viewForm}>
       <Input
@@ -121,7 +125,9 @@ const FormAdd = ({setName, setAddress, setDescription,setIsVisibleMap,locationRe
       />
       <Input
         placeholder="Dirección"
-        onChangeText={(text) => setAddress(text)}
+        defaultValue={`${address.substr(0,35)}`}
+        disabled
+        // onChangeText={(text) => setAddress(text)}
         containerStyle={styles.input}
         rightIcon={
           <Icon
@@ -143,7 +149,7 @@ const FormAdd = ({setName, setAddress, setDescription,setIsVisibleMap,locationRe
 
 }
 
-const Map = ({isVisibleMap, setIsVisibleMap,toast,setlLocationRestaurant}) => {
+const Map = ({isVisibleMap, setIsVisibleMap,toast,setlLocationRestaurant,setAddress}) => {
   const [location, setLocation] = useState(null);
   useEffect(() => {
     const getLocation = async() => {
@@ -164,9 +170,19 @@ const Map = ({isVisibleMap, setIsVisibleMap,toast,setlLocationRestaurant}) => {
     getLocation();
   }, [])
 
-  const saveLocation = () => {
+  const saveLocation = async() => {
     setlLocationRestaurant(location);
     setIsVisibleMap(false);
+    const api = `https://api.opencagedata.com/geocode/v1/json?q=${location.latitude}+${location.longitude}&key=a08ab980938843789855fc7e05f161d3&no_annotations=1&language=es`
+    fetch(api)
+    .then((response) => response.json())
+    .then((json) => {
+      setAddress(json.results[0].formatted);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+
     toast.current.show("Localización guardada con exito");
   }
   return (

@@ -21,7 +21,6 @@ const Restaurants = () => {
   }, [reloadUserInfo]);
   useFocusEffect(
     useCallback(() => {
-      console.log("cargar restaurant");
       const getRestaurants = async() => {
         const response = await firebase.db.collection("restaurants").get();
         setTotalRestaurants(response.size);
