@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import ListRestaurants from '../../components/Restaurants/ListRestaurants';
 import AuthContext from '../../context/auth/AuthContext';
 import firebase from '../../database/firebase';
@@ -16,25 +16,29 @@ const Restaurants = () => {
   const limitRestaurants= 7;
 
   useEffect(() => {
-    const getRestaurants = async() => {
-      const response = await firebase.db.collection("restaurants").get();
-      setTotalRestaurants(response.size);
-      const resultRestaurants = [];
-      const restaurants = await firebase.db.collection("restaurants").orderBy("createAt", "desc").limit(limitRestaurants).get();
-      setStartRestaurants(restaurants.docs[restaurants.docs.length - 1]);
-      restaurants.forEach((doc) => {
-        const restaurant = doc.data();
-        restaurant.id = doc.id;
-        resultRestaurants.push(restaurant);
-      });
-      setRestaurants(resultRestaurants);
-    }
-    getRestaurants();
-  }, [])
-  useEffect(() => {
     reloadUser();
     setReloadUserInfo(false);
-  }, [reloadUserInfo])
+  }, [reloadUserInfo]);
+  useFocusEffect(
+    useCallback(() => {
+      console.log("cargar restaurant");
+      const getRestaurants = async() => {
+        const response = await firebase.db.collection("restaurants").get();
+        setTotalRestaurants(response.size);
+        const resultRestaurants = [];
+        const restaurants = await firebase.db.collection("restaurants").orderBy("createAt", "desc").limit(limitRestaurants).get();
+        setStartRestaurants(restaurants.docs[restaurants.docs.length - 1]);
+        restaurants.forEach((doc) => {
+          const restaurant = doc.data();
+          restaurant.id = doc.id;
+          resultRestaurants.push(restaurant);
+        });
+        setRestaurants(resultRestaurants);
+      }
+      getRestaurants();
+    },[])
+  )
+
 
   const handleLoadMore = async() => {
     const resultRestaurants = [];

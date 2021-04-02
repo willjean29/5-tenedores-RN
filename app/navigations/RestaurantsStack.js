@@ -1,6 +1,7 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import Restaurants from '../screens/Restaurants/Restaurants';
+import Restaurant from '../screens/Restaurants/Restaurant';
 import AddRestaurant from '../screens/Restaurants/AddRestaurant';
 const Stack = createStackNavigator();
 
@@ -19,6 +20,13 @@ const RestaurantsStack = () => {
         component={AddRestaurant}
         options={{
           title: "Agregar Restaurante"
+        }}
+      />
+      <Stack.Screen
+        name="restaurant"
+        component={Restaurant}
+        options={{
+          title: "Detalle de Restaurante"
         }}
       />
     </Stack.Navigator>

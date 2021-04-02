@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Alert, Dimensions } from 'react-native';
 import { Input, Button, Icon, Avatar, Image } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
@@ -10,6 +11,7 @@ import firebase from '../../database/firebase';
 import ImageDefault from '../../../assets/img/no-image.png';
 const widthScreen = Dimensions.get("window").width;
 const AddRestaurantForm = ({toast,setIsVisible}) => {
+  const navigation = useNavigation();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
@@ -41,6 +43,7 @@ const AddRestaurantForm = ({toast,setIsVisible}) => {
         })
         setIsVisible(false);
         toast.current.show("Restaurante creado con exito");
+        navigation.navigate("restaurants");
       } catch (error) {
         console.log(error);
         setIsVisible(false);
@@ -81,7 +84,7 @@ const AddRestaurantForm = ({toast,setIsVisible}) => {
         toast={toast}
       />
       <Button
-        title="Crearsd Restaurante"
+        title="Crear Restaurante"
         buttonStyle={styles.btnAddRestaurant}
         onPress={addRestaurant}
       />

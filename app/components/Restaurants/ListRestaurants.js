@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, Text, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { Image } from 'react-native-elements';
+import { useNavigation } from '@react-navigation/native'
 import ImageDefault from '../../../assets/img/no-image.png';
 const ListRestaurants = ({restaurants,handleLoadMore,isLoading}) => {
-  const restaurantes = [];
   return (  
     <View style={styles.viewRestaurants}>
 
@@ -31,9 +31,11 @@ const ListRestaurants = ({restaurants,handleLoadMore,isLoading}) => {
 }
 
 const RestaurantItem = ({restaurant}) => {
-  console.log(restaurant);
+  // console.log(restaurant);
+  const navigation = useNavigation();
   const goRestaurant = () => {
     console.log("OK");
+    navigation.navigate("restaurant");
   }
   return (
     <TouchableOpacity onPress={goRestaurant}>
@@ -76,18 +78,14 @@ const FooterList = ({isLoading}) => {
       </View>
     )
   }else{
-    return (
-      <View>
-        <Text>No hay mas restaurantes que cargar</Text>
-      </View>
-    )
+    return null;
   }
 }
 
 const styles = StyleSheet.create({
   viewRestaurants: {
-    // flex: 1,
-    // justifyContent: "center"
+    flex: 1,
+    justifyContent: "center"
   },  
   viewRestaurant: {
     flexDirection: "row",
