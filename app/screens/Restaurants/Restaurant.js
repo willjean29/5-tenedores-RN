@@ -1,45 +1,38 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View, StyleSheet, Text, ScrollView, Dimensions, Platform } from 'react-native';
-import { Rating, ListItem } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
+import { Rating, ListItem, Button } from 'react-native-elements';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MapView from 'react-native-maps'; 
 import openMap from 'react-native-open-maps';
 import Carousel from '../../components/Corousel';
+import Loading from '../../components/Loading';
+import ListReviewRestaurant from '../../components/Restaurants/ListReviewRestaurant';
+import firebase from '../../database/firebase';
 const screenWidth = Dimensions.get('window').width;
-const Restaurant = ({route}) => {
-  const navigation = useNavigation();
-  const {params: {restaurant}} = route;
-  const [rating, setRating] = useState(restaurant.rating);
-  const listInfo = [
-    {
-      text: restaurant.address,
-      iconName: "map-marker",
-      iconType: "material-community",
-      color: "#00a680",
-      action: null
-    },
-    {
-      text: "926-594-773",
-      iconName: "phone",
-      iconType: "material-community",
-      color: "#00a680",
-      action: null
-    },
-    {
-      text: "willjean29@gmail.com",
-      iconName: "at",
-      iconType: "material-community",
-      color: "#00a680",
-      action: null
-    }
-  ]
-  useEffect(() => {
-    navigation.setOptions({
-      title: restaurant.name
-    })
-  }, [])
+const Restaurant = ({route,navigation}) => {
+  const {params} = route;
+  const {id, name} = params.restaurant;
+  const [restaurant, setRestaurant] = useState(null);
+  const [rating, setRating] = useState(0);
+  useFocusEffect(
+    useCallback(() => {
+      const getRestaurant = async() => {
+        const doc = await firebase.db.collection("restaurants").doc(id);
+        const restaurant = await doc.get();
+        navigation.setOptions({
+          title: name
+        })
+        setRating(restaurant.data().rating)
+        setRestaurant(restaurant.data());
+      }
+      getRestaurant();
+    },[])
+  )
+
+  if (!restaurant) return <Loading isVisible={true} text="Cargando..." />;
   return (  
     <ScrollView style={styles.viewBody}>
+
       <Carousel
         arrayImages={restaurant.images}
         height={200}
@@ -50,6 +43,62 @@ const Restaurant = ({route}) => {
         description={restaurant.description}
         rating={rating}
       />
+      <RestaurantInfo
+        restaurant={restaurant}
+      />
+      <ListReviewRestaurant
+        idRestaurant={id}
+      />
+    </ScrollView>
+  );
+}
+
+const TitleRestaurant = ({name, description, rating}) => {
+  return (
+    <View style={styles.viewRestaurantTitle}>
+      <View style={{flexDirection: "row"}}>
+        <Text style={styles.nameRestaurant}>{name}</Text>
+        <Rating
+          style={styles.rating}
+          imageSize={25}
+          readonly
+          startingValue={parseFloat(rating)}
+        />
+      </View> 
+      <Text style={styles.descriptionRestaurant}>{description}</Text>
+    </View>
+  )
+}
+
+const RestaurantInfo = ({restaurant}) => {
+  const listInfo = [
+    {
+      text: restaurant.address,
+      iconName: "map-marker",
+      iconType: "material-community",
+      color: "#00a680",
+      action: null
+    },
+    // {
+    //   text: "926-594-773",
+    //   iconName: "phone",
+    //   iconType: "material-community",
+    //   color: "#00a680",
+    //   action: null
+    // },
+    // {
+    //   text: "willjean29@gmail.com",
+    //   iconName: "at",
+    //   iconType: "material-community",
+    //   color: "#00a680",
+    //   action: null
+    // }
+  ]
+  return (
+    <View style={styles.viewRestaurantInfo}>
+      <Text style={styles.restaurantInfoTitle}>
+        Informacion sobre el restaurante
+      </Text>
       <Map
         name={restaurant.name}
         location={restaurant.location}
@@ -75,23 +124,6 @@ const Restaurant = ({route}) => {
           </ListItem>
         ))
       }
-    </ScrollView>
-  );
-}
-
-const TitleRestaurant = ({name, description, rating}) => {
-  return (
-    <View style={styles.viewRestaurantTitle}>
-      <View style={{flexDirection: "row"}}>
-        <Text style={styles.nameRestaurant}>{name}</Text>
-        <Rating
-          style={styles.rating}
-          imageSize={25}
-          readonly
-          startingValue={parseFloat(rating)}
-        />
-      </View> 
-      <Text style={styles.descriptionRestaurant}>{description}</Text>
     </View>
   )
 }
@@ -108,9 +140,6 @@ const Map = ({location, name, address}) => {
   }
   return (
     <View style={styles.viewMap}>
-      <Text style={styles.restaurantInfoTitle}>
-        Informacion sobre el restaurante
-      </Text>
       <MapView
         style={styles.viewMapRestaurant}
         initialRegion={location}
@@ -149,7 +178,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0
   },
-  viewMap: {
+  viewRestaurantInfo: {
     margin: 15,
     marginTop: 10
   },
@@ -163,7 +192,6 @@ const styles = StyleSheet.create({
     width: "100%"
   },
   containerListItem: {
-    // borderWidth: 3,
     borderBottomColor: "#d8d8d8",
     borderBottomWidth: 1
   }

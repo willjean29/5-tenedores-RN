@@ -19,6 +19,7 @@ const Restaurants = () => {
     reloadUser();
     setReloadUserInfo(false);
   }, [reloadUserInfo]);
+  
   useFocusEffect(
     useCallback(() => {
       const getRestaurants = async() => {
