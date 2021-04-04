@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   btnContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    marginTop: 10,
+    marginTop: 40,
     marginBottom: 20,
     width: "95%"
   },

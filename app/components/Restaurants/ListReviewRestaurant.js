@@ -4,7 +4,7 @@ import { Button, Avatar, Rating } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import AuthContext from '../../context/auth/AuthContext';
 import firebase from '../../database/firebase';
-import ImageDefault from '../../../assets/img/no-image.png';
+import ImageDefault from '../../../assets/img/avatar-default.jpg';
 const ListReviewRestaurant = ({idRestaurant}) => {
   console.log(idRestaurant);
   const {user} = useContext(AuthContext);
@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
   },
   viewReview: {
     flexDirection: "row",
-    // margin: 15,
     padding: 15,
     borderBottomColor: "#e3e3e3",
     borderBottomWidth: 1,
@@ -141,7 +140,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold"
   },
   reviewText: {
-    color: "gray"
+    color: "gray",
+    paddingVertical: 10
   },
   reviewDate: {
     color: "gray",
