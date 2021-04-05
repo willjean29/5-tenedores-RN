@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { View, StyleSheet, Text, ScrollView, Dimensions, Platform } from 'react-native';
-import { Rating, ListItem, Button } from 'react-native-elements';
+import { Rating, ListItem, Button, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MapView from 'react-native-maps'; 
 import openMap from 'react-native-open-maps';
+import Toast from 'react-native-easy-toast';
+import AuthContext from '../../context/auth/AuthContext';
 import Carousel from '../../components/Corousel';
 import Loading from '../../components/Loading';
 import ListReviewRestaurant from '../../components/Restaurants/ListReviewRestaurant';
@@ -12,8 +14,11 @@ const screenWidth = Dimensions.get('window').width;
 const Restaurant = ({route,navigation}) => {
   const {params} = route;
   const {id, name} = params.restaurant;
+  const {user} = useContext(AuthContext);
   const [restaurant, setRestaurant] = useState(null);
   const [rating, setRating] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const toast = useRef();
   useFocusEffect(
     useCallback(() => {
       const getRestaurant = async() => {
@@ -29,10 +34,71 @@ const Restaurant = ({route,navigation}) => {
     },[])
   )
 
+  useEffect(() => {
+    const getIsFavorite = async() => {
+      if(restaurant){
+        const response = await firebase.db.collection("favorites").where("idRestaurant","==",id).get();
+        if(response.docs.length === 1){
+          setIsFavorite(true);
+        };
+      }
+    }
+    getIsFavorite();
+  }, [restaurant])
+  const addFavorite = async() => {
+    if(!user){
+      toast.current.show("Para usar esta opción debe iniciar sesión");
+      return;
+    }else{
+      const payload = {
+        idUser: user.uid,
+        idRestaurant: id
+      }
+      try {
+        await firebase.db.collection("favorites").add(payload);
+        setIsFavorite(true);
+        toast.current.show("Restaurante agregado a favoritos");
+      } catch (error) {
+        console.log(error);
+        toast.current.show("Error al agregar a favoritos");
+      }
+     
+    }
+  }
+
+  const removeFavorite = async() => {
+    if(!user){
+      toast.current.show("Para usar esta opción debe iniciar sesión");
+      return;
+    }else{
+      const response = await firebase.db.collection("favorites").where("idRestaurant","==",id).get();
+      response.forEach(async(doc) => {
+        const idDelete = doc.id;
+        try {
+          await firebase.db.collection("favorites").doc(idDelete).delete();
+          setIsFavorite(false);
+          toast.current.show("Restaurante removido de favoritos");
+        } catch (error) {
+          console.log(error);
+          toast.current.show("Error al eliminar de favoritos");
+        }
+      })
+    }
+  }
+
   if (!restaurant) return <Loading isVisible={true} text="Cargando..." />;
   return (  
     <ScrollView style={styles.viewBody}>
-
+      <View style={styles.viewFavorite}>
+        <Icon
+          type="material-community"
+          name={isFavorite ? "heart" : "heart-outline" }
+          onPress={isFavorite ? removeFavorite : addFavorite }
+          color={isFavorite ? "#f00" : "#000" }
+          size={26}
+          underlayColor="transparent"
+        />
+      </View>
       <Carousel
         arrayImages={restaurant.images}
         height={200}
@@ -49,6 +115,7 @@ const Restaurant = ({route,navigation}) => {
       <ListReviewRestaurant
         idRestaurant={id}
       />
+      <Toast ref={toast} position="center" opacity={0.8}/>
     </ScrollView>
   );
 }
@@ -194,6 +261,15 @@ const styles = StyleSheet.create({
   containerListItem: {
     borderBottomColor: "#d8d8d8",
     borderBottomWidth: 1
+  },
+  viewFavorite: {
+    top: 0,
+    position: "absolute",
+    right: 0,
+    zIndex: 2,
+    backgroundColor: "#fff",
+    borderRadius: 100,
+    padding: 10
   }
 })
  

@@ -73,7 +73,6 @@ const ListReviewRestaurant = ({idRestaurant}) => {
 const Review = ({review}) => {
   const date = new Date(review.createAt.seconds * 1000);
   const createAt = `${date.getDate()}/${date.getMonth()}/${date.getFullYear()} - ${date.getHours()}:${date.getMinutes() < 10 ? "0" : ""}${date.getMinutes()}`;
-  console.log(createAt);
   return (
     <View style={styles.viewReview}>
       <View style={styles.viewImageAvatar}>
