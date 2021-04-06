@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, ActivityIndicator} from 'react-native';
 import { Avatar, ListItem } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import AvatarDefault from '../../../assets/img/avatar-default.jpg';
@@ -67,6 +67,7 @@ const InfoUser = ({userInfo, setReloadUserInfo, toast, setIsVisible, setLoadingT
         }
         activeOpacity={0.7}
         containerStyle={styles.userAvatarContainer}
+        PlaceholderContent={<ActivityIndicator size="large" color="#00a680"/>}
       >
         <Avatar.Accessory 
           size={22}

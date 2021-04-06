@@ -6,7 +6,6 @@ import AuthContext from '../../context/auth/AuthContext';
 import firebase from '../../database/firebase';
 import ImageDefault from '../../../assets/img/avatar-default.jpg';
 const ListReviewRestaurant = ({idRestaurant}) => {
-  console.log(idRestaurant);
   const {user} = useContext(AuthContext);
   const navigation = useNavigation();
   const [reviews, setReviews] = useState([]);
@@ -49,7 +48,7 @@ const ListReviewRestaurant = ({idRestaurant}) => {
             <Text style={styles.textNotLogued}>
               Para escribir un comentario necesita estar logeado{"\n"}
               <Text style={{fontWeight: "bold"}}
-                onPress={() => navigation.navigate("login")}
+                onPress={() => navigation.navigate("account", {screen: "login"})}
               >
                 pulsa AQUI para iniciar sesión
               </Text>

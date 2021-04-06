@@ -1,14 +1,17 @@
 import React from 'react';
 import { View, StyleSheet, FlatList, Text, ActivityIndicator, TouchableOpacity} from 'react-native';
-import { Image } from 'react-native-elements';
+import { Image, Icon } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native'
 import ImageDefault from '../../../assets/img/no-image.png';
 const ListRestaurants = ({restaurants,handleLoadMore,isLoading}) => {
+
+  if(restaurants && restaurants.length === 0) return (
+    <NotFoundRestaurants/>
+  )
   return (  
     <View style={styles.viewRestaurants}>
-
       {
-        (restaurants.length > 0 ) ? (
+        (restaurants) ? (
           <>
             <FlatList
               data={restaurants}
@@ -54,7 +57,7 @@ const RestaurantItem = ({restaurant}) => {
             style={styles.imageRestaurant}
           />
         </View>
-        <View>
+        <View style={styles.viewInfoRestaurant}>
           <Text style={styles.restaurantName}>
             {restaurant.name}
           </Text>
@@ -82,6 +85,19 @@ const FooterList = ({isLoading}) => {
   }
 }
 
+const NotFoundRestaurants = () => {
+  return (
+    <View style={styles.viewNotFound}>
+      <Icon
+        type="material-community"
+        name="alert-outline"
+        size={50}
+      />
+      <Text style={styles.txtNotFound}>No hay restaurantes registrados</Text>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
   viewRestaurants: {
     flex: 1,
@@ -96,10 +112,17 @@ const styles = StyleSheet.create({
   },
   viewRestaurantImage:{
     marginRight: 15,
+    borderRadius: 100
+  },
+  viewInfoRestaurant: {
+    flex: 1, 
+    marginRight: 15, 
+    justifyContent: "center",
   },
   imageRestaurant: {
-    width: 80,
-    height: 80
+    borderRadius: 100,
+    width: 100,
+    height: 100
   },
   restaurantName: {
     fontWeight: "bold"
@@ -107,13 +130,20 @@ const styles = StyleSheet.create({
   restaurantAddress: {
     paddingTop: 5,
     color: "gray",
-    width: 280
   },
   restaurantDescription: {
     paddingTop: 2,
     color: "gray",
-    width: 280
-  }
+  },
+  viewNotFound: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  txtNotFound: {
+    fontWeight: "bold",
+    fontSize: 20
+  },
 })
  
 export default ListRestaurants;

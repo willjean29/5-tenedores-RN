@@ -9,7 +9,7 @@ const Restaurants = () => {
   const {user, reloadUser} = useContext(AuthContext); 
   const navigation = useNavigation();
   const [reloadUserInfo, setReloadUserInfo] = useState(false);
-  const [restaurants, setRestaurants] = useState([]);
+  const [restaurants, setRestaurants] = useState(null);
   const [totalRestaurants, setTotalRestaurants] = useState(0);
   const [startRestaurants, setStartRestaurants] = useState(null);
   const [isLoading, setIsLoading] = useState(false);

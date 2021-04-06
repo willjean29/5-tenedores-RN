@@ -19,8 +19,10 @@ const Restaurant = ({route,navigation}) => {
   const [rating, setRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
   const toast = useRef();
+ 
   useFocusEffect(
     useCallback(() => {
+      // setRestaurant(null);
       const getRestaurant = async() => {
         const doc = await firebase.db.collection("restaurants").doc(id);
         const restaurant = await doc.get();
@@ -31,20 +33,20 @@ const Restaurant = ({route,navigation}) => {
         setRestaurant(restaurant.data());
       }
       getRestaurant();
-    },[])
+    },[id])
   )
 
   useEffect(() => {
     const getIsFavorite = async() => {
-      if(restaurant){
-        const response = await firebase.db.collection("favorites").where("idRestaurant","==",id).get();
+      if(restaurant && user){
+        const response = await firebase.db.collection("favorites").where("idRestaurant","==",id).where("idUser","==",user.uid).get();
         if(response.docs.length === 1){
           setIsFavorite(true);
         };
       }
     }
     getIsFavorite();
-  }, [restaurant])
+  }, [restaurant, user])
   const addFavorite = async() => {
     if(!user){
       toast.current.show("Para usar esta opción debe iniciar sesión");
@@ -263,9 +265,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1
   },
   viewFavorite: {
-    top: 0,
+    top: 5,
     position: "absolute",
-    right: 0,
+    right: 5,
     zIndex: 2,
     backgroundColor: "#fff",
     borderRadius: 100,

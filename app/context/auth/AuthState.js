@@ -49,7 +49,7 @@ const AuthState = (props) => {
     })
     try {
       const user = await firebase.auth.signInWithEmailAndPassword(email, password);
-      console.log("LOGIN",user);
+  
       dispatch({
         type: LOGIN_SUCCESS,
         payload: user.user
