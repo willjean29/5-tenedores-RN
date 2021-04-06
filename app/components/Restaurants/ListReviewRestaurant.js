@@ -22,7 +22,7 @@ const ListReviewRestaurant = ({idRestaurant}) => {
         setReviews(reviewsTotal);
       }
       getReviews();
-    }, [])
+    }, [idRestaurant])
   )
 
   return ( 

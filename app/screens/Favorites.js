@@ -61,7 +61,7 @@ const Favorites = () => {
           </View>
 
         ) : (
-          <View>
+          <View style={styles.viewFlatlist}>
             <FlatList
               data={favorites}
               renderItem={({item}) => (
@@ -75,6 +75,7 @@ const Favorites = () => {
               keyExtractor={(item,index) => item.id}
             />
           </View>
+
         )
       }
       <Toast ref={toast} position="center" opacity={0.8}/>
@@ -189,6 +190,9 @@ const styles = StyleSheet.create({
   viewFavorites: {
     flex: 1
   },
+  viewFlatlist: {
+    flex: 1
+  },
   viewLoading: {
     flex: 1,
     alignItems: "center",
@@ -212,16 +216,19 @@ const styles = StyleSheet.create({
   },
   viewRestaurant:{
     margin: 10,
-    backgroundColor: "#fff",
-    borderRadius: 10
+    borderRadius: 20,
+    elevation: 8
   },
   imageRestaurant: {
     width: "100%",
     height: 150,
-    borderRadius: 10
+    borderTopLeftRadius: 10,
+    borderTopRightRadius:10
   },
   viewInfoRestaurant: {
     backgroundColor: "#fff",
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10
   },
   txtTitleRestaurant: {
     fontWeight: "bold",
