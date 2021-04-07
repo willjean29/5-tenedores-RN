@@ -22,7 +22,7 @@ const Restaurant = ({route,navigation}) => {
  
   useFocusEffect(
     useCallback(() => {
-      // setRestaurant(null);
+      setRestaurant(null);
       const getRestaurant = async() => {
         const doc = await firebase.db.collection("restaurants").doc(id);
         const restaurant = await doc.get();
