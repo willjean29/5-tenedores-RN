@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Text, ScrollView, Dimensions, Platform } from 'react-native';
+import { View, StyleSheet, Text, ScrollView, Dimensions, Platform, Alert } from 'react-native';
 import { Rating, ListItem, Button, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MapView from 'react-native-maps'; 
@@ -18,19 +18,21 @@ const Restaurant = ({route,navigation}) => {
   const [restaurant, setRestaurant] = useState(null);
   const [rating, setRating] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useRef();
- 
+  
   useFocusEffect(
     useCallback(() => {
       setRestaurant(null);
       const getRestaurant = async() => {
-        const doc = await firebase.db.collection("restaurants").doc(id);
-        const restaurant = await doc.get();
+        const doc = await firebase.db.collection("restaurants").doc(id).get();
+        const restaurant = doc.data();
+        restaurant.id = doc.id;
         navigation.setOptions({
           title: name
         })
-        setRating(restaurant.data().rating)
-        setRestaurant(restaurant.data());
+        setRating(restaurant.rating);
+        setRestaurant(restaurant);
       }
       getRestaurant();
     },[id])
@@ -91,6 +93,61 @@ const Restaurant = ({route,navigation}) => {
       })
     }
   }
+  const deleteRestaurant = async() => {
+    
+    try {
+      // eliminar de restaurants
+      setIsLoading(true);
+      await firebase.db.collection("restaurants").doc(restaurant.id).delete();
+      // eliminar de favoritos
+      const response = await firebase.db.collection("favorites").where("idRestaurant","==",restaurant.id).get();
+
+      if(response.docs.length > 0){
+        response.forEach(async(doc) => {
+          const idDelete = doc.id;
+          try {
+            await firebase.db.collection("favorites").doc(idDelete).delete();
+            setIsLoading(false);
+            toast.current.show("Se elimino restaurante");
+            navigation.navigate("restaurants");
+            console.log("se elimino");
+          } catch (error) {
+            setIsLoading(false);
+            toast.current.show("Error al eliminar de favoritos")
+          }
+        })
+      }else{
+        setIsLoading(false);
+        toast.current.show("Se elimino restaurante");
+        navigation.navigate("restaurants");
+      };
+
+   
+    } catch (error) {
+      console.log(error);
+      setIsLoading(false);
+      toast.current.show("Error al eliminar restaurante");
+    }
+
+  }
+  const confirmAlertDelete = () => {
+    Alert.alert(
+      "Eliminar Restaurante",
+      "¿Desea eliminar el restaurante?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel"
+        },
+        {
+          text: "Si, eliminar",
+          onPress: () => deleteRestaurant()
+        }
+      ],
+      {cancelable: true}
+    );
+
+  }
 
   if (!restaurant) return <Loading isVisible={true} text="Cargando..." />;
   return (  
@@ -105,6 +162,21 @@ const Restaurant = ({route,navigation}) => {
           underlayColor="transparent"
         />
       </View>
+      {
+        user && (
+          <View style={styles.viewDelete}>
+            <Icon
+              type="material-community"
+              name="delete-outline"
+              onPress={confirmAlertDelete}
+              color="#000"
+              size={26}
+              underlayColor="transparent"
+            />
+          </View>
+        )
+      }
+
       <Carousel
         arrayImages={restaurant.images}
         height={200}
@@ -121,6 +193,7 @@ const Restaurant = ({route,navigation}) => {
       <ListReviewRestaurant
         idRestaurant={id}
       />
+      <Loading isVisible={isLoading} text="Eliminando Restaurante"/>
       <Toast ref={toast} position="center" opacity={0.8}/>
     </ScrollView>
   );
@@ -270,6 +343,15 @@ const styles = StyleSheet.create({
   },
   viewFavorite: {
     top: 5,
+    position: "absolute",
+    right: 5,
+    zIndex: 2,
+    backgroundColor: "#fff",
+    borderRadius: 100,
+    padding: 10
+  },
+  viewDelete: {
+    top: 145,
     position: "absolute",
     right: 5,
     zIndex: 2,

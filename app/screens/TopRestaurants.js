@@ -64,26 +64,27 @@ const NotFoundTop = () => {
 const Restaurant = ({restaurant,index}) => {
   const navigation = useNavigation();
   const [colorIcon, setcolorIcon] = useState("#fff");
-  useEffect(() => {
-    const selectColor = () => {
-      switch (index) {
-        case 0:
-          setcolorIcon("#efb819")
-          break;
-    
-        case 1:
-          setcolorIcon("#e3e4e5")
-          break;
-        case 2:
-          setcolorIcon("#cd7f32")
-          break;
-        default: 
-          setcolorIcon("#000")
-          break;
+  useFocusEffect(
+    useCallback(() => {
+      const selectColor = () => {
+        switch (index) {
+          case 0:
+            setcolorIcon("#efb819")
+            break;
+          case 1:
+            setcolorIcon("#e3e4e5")
+            break;
+          case 2:
+            setcolorIcon("#cd7f32")
+            break;
+          default: 
+            setcolorIcon("#000")
+            break;
+        }
       }
-    }
-    selectColor();
-  }, [])
+      selectColor();
+    }, [restaurant])
+  )
 
   return (
     <TouchableOpacity onPress={() => navigation.navigate("restaurants", {
